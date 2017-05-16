@@ -28,20 +28,22 @@ ANACONDA_INSTALLER="$ANACONDA_FLAVOR-Linux-x86_64.sh"
 MODULE_NAME="$FENICS_RELEASE-$ANACONDA_FLAVOR"
 PACKAGE_ROOT=$PACKAGE_BASE/$MODULE_CATEGORY/$MODULE_NAME
 
-echo cp skel.tcl /tmp;
+cd /tmp
+wget https://repo.continuum.io/archive/$ANACONDA_INSTALLER
 
-echo cd /tmp
-echo wget https://repo.continuum.io/archive/$ANACONDA_INSTALLER
-
-echo bash ./$ANACONDA_INSTALLER -b -p $PACKAGE_ROOT
-echo $PACKAGE_ROOT/bin/conda create --yes --name fenicsproject --channel conda-forge fenics 
+bash ./$ANACONDA_INSTALLER -b -p $PACKAGE_ROOT
+$PACKAGE_ROOT/bin/conda create --yes --name fenicsproject --channel conda-forge fenics
 
 # /opt/uio/modules/packages/FEniCS/2017.01-anaconda2-4.3.1/bin/conda create -n fenicsproject -c conda-forge fenics
 
 for p in $EXTRA_PACKAGES; do
-  echo $PACKAGE_ROOT/bin/conda install --yes --name fenicsproject $p
+  $PACKAGE_ROOT/bin/conda install --yes --name fenicsproject $p
 done
 
-echo cp skel.tcl $MODULE_FILE_PATH/$MODULE_CATEGORY/$MODULE_NAME
+cp skel.tcl $MODULE_FILE_PATH/$MODULE_CATEGORY/$MODULE_NAME
+
+echo "Setting permissions. This may take a while."
+chmod a+rX -R $PACKAGE_ROOT
+chmod a+r $MODULE_FILE_PATH/$MODULE_CATEGORY/$MODULE_NAME
 
 cd -
